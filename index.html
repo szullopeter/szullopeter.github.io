@@ -89,6 +89,11 @@
             overflow: hidden;
         }
         
+        .course.grid-view {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
         .course::before {
             content: "";
             position: absolute;
@@ -126,6 +131,12 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
+        .task.grid-view {
+            margin: 0;
+            height: 100%;
+            justify-content: space-between;
+        }
+        
         .task-info {
             display: flex;
             flex-direction: column;
@@ -147,9 +158,24 @@
             font-family: 'Space Mono', monospace;
         }
         
-        .task-deadline.warning {
+        .task-days-left {
+            font-size: clamp(0.7rem, 3vw, 0.8rem);
+            margin-top: 5px;
+            padding: 3px 6px;
+            border-radius: 3px;
+            background-color: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .task-deadline.warning, .task-days-left.warning {
             color: var(--warning-color);
             animation: pulse 2s infinite;
+        }
+        
+        .task-deadline.danger, .task-days-left.danger {
+            color: var(--accent-color);
+            animation: pulse 1s infinite;
         }
         
         @keyframes pulse {
@@ -203,8 +229,8 @@
             right: 0;
             bottom: 0;
             background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
-                rgba(0, 0, 0, 0.15) 50%
+                rgba(18, 16, 16, 0) 25%, 
+                rgba(0, 0, 0, 0.15) 25%
             );
             background-size: 100% 4px;
             pointer-events: none;
@@ -294,6 +320,7 @@
             transition: all 0.2s;
             position: relative;
             border: 1px solid transparent;
+            font-size: 0.9rem;
         }
         
         .calendar-day:hover {
@@ -412,6 +439,141 @@
             color: var(--text-secondary);
             font-family: 'Space Mono', monospace;
         }
+        
+        /* Week Progress Indicator */
+        .week-indicator {
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .week-indicator::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+        }
+        
+        .week-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .week-number {
+            color: var(--retro-teal);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .week-dates {
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--retro-teal), var(--accent-color));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-days {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        
+        .progress-day {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .progress-day.current {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        
+        .view-toggle button {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        
+        .view-toggle button:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right: none;
+        }
+        
+        .view-toggle button:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        
+        .view-toggle button.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        /* Grid View */
+        #courses.grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            #courses.grid-view {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-day {
+                font-size: 0.8rem;
+                padding: 2px;
+            }
+            
+            .week-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -424,6 +586,27 @@
         </div>
     </header>
     
+    <!-- Week Progress Indicator -->
+    <div class="week-indicator">
+        <div class="week-info">
+            <div class="week-number" id="week-number">Week 10</div>
+            <div class="week-dates" id="week-dates">Apr 15 - Apr 21, 2025</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="week-progress"></div>
+        </div>
+        <div class="progress-days">
+            <div class="progress-day" id="mon">Mon</div>
+            <div class="progress-day" id="tue">Tue</div>
+            <div class="progress-day" id="wed">Wed</div>
+            <div class="progress-day" id="thu">Thu</div>
+            <div class="progress-day" id="fri">Fri</div>
+            <div class="progress-day" id="sat">Sat</div>
+            <div class="progress-day" id="sun">Sun</div>
+        </div>
+    </div>
+    
+    <!-- Calendar -->
     <div class="calendar-container">
         <div class="calendar-header">
             <h3 class="calendar-title" id="calendar-month-year">April 2025</h3>
@@ -444,8 +627,16 @@
         <div class="calendar-grid" id="calendar-days"></div>
     </div>
     
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <button id="list-view-btn" class="active">List View</button>
+        <button id="grid-view-btn">Grid View</button>
+    </div>
+    
+    <!-- Courses Container -->
     <div id="courses"></div>
 
+    <!-- Tasks Modal -->
     <div class="tasks-modal" id="tasks-modal">
         <div class="tasks-modal-content">
             <div class="tasks-modal-header">
@@ -457,6 +648,9 @@
     </div>
 
     <script>
+        // Semester start date (Feb 10, 2025)
+        const SEMESTER_START_DATE = new Date(2025, 1, 10); // Month is 0-indexed (1 = February)
+        
         const courses = [
             {
                 name: "MI",
@@ -472,22 +666,7 @@
                     { name: "Final", deadline: "2025-05-23" }
                 ]
             },
-            {
-                name: "UIX",
-                tasks: [
-                    { name: "Lab7", deadline: "2025-04-07" },
-                    { name: "Lab8", deadline: "2025-04-14" },
-                    { name: "Lab9", deadline: "2025-04-21" },
-                    { name: "Lab10", deadline: "2025-04-28" },
-                    { name: "Lab11", deadline: "2025-05-05" }
-                ]
-            },
-            {
-                name: "TED",
-                tasks: [
-                    { name: "PPT", deadline: "2025-05-06" }
-                ]
-            },
+
             {
                 name: "BP",
                 tasks: [
@@ -501,12 +680,30 @@
                     { name: "HW - Spec", deadline: "2025-04-16" },
                     { name: "HW", deadline: "2025-05-01" }
                 ]
-            }
+            },
+                        
+            {
+                name: "TED",
+                tasks: [
+                    { name: "PPT", deadline: "2025-05-06" }
+                ]
+            },
+            {
+                name: "UIX",
+                tasks: [
+                    { name: "Lab7", deadline: "2025-04-07" },
+                    { name: "Lab8", deadline: "2025-04-14" },
+                    { name: "Lab9", deadline: "2025-04-21" },
+                    { name: "Lab10", deadline: "2025-04-28" },
+                    { name: "Lab11", deadline: "2025-05-05" }
+                ]
+            },
         ];
 
         // Calendar functionality
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
+        let currentView = 'list'; // 'list' or 'grid'
         
         // Get all tasks dates
         function getAllTaskDates() {
@@ -622,6 +819,129 @@
             modal.classList.add("active");
         }
         
+        // Calculate current week of semester and progress
+        function updateWeekProgress() {
+            const today = new Date();
+            const startDate = new Date(SEMESTER_START_DATE);
+            
+            // Calculate current week number
+            const timeDiff = today - startDate;
+            const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const currentWeek = Math.floor(daysDiff / 7) + 1;
+            
+            // Calculate current day of week (0-6, Sunday-Saturday)
+            const dayOfWeek = today.getDay();
+            
+            // Calculate progress through current week (0-1)
+            const weekProgress = (dayOfWeek / 6).toFixed(2); // 6 because we count from 0-6
+            
+            // Update week number display
+            document.getElementById("week-number").textContent = `Week ${currentWeek}`;
+            
+            // Calculate current week's start and end dates
+            const weekStart = new Date(startDate);
+            weekStart.setDate(startDate.getDate() + (currentWeek - 1) * 7);
+            
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            
+            // Format dates
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const weekStartStr = `${monthNames[weekStart.getMonth()]} ${weekStart.getDate()}`;
+            const weekEndStr = `${monthNames[weekEnd.getMonth()]} ${weekEnd.getDate()}, ${weekEnd.getFullYear()}`;
+            
+            document.getElementById("week-dates").textContent = `${weekStartStr} - ${weekEndStr}`;
+            
+            // Update progress bar
+            document.getElementById("week-progress").style.width = `${weekProgress * 100}%`;
+            
+            // Highlight current day
+            const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+            days.forEach((day, index) => {
+                const dayElement = document.getElementById(day);
+                if (index === dayOfWeek) {
+                    dayElement.classList.add("current");
+                } else {
+                    dayElement.classList.remove("current");
+                }
+            });
+        }
+        
+        // Render courses in list or grid view
+        function renderCourses(view = 'list') {
+            const container = document.getElementById("courses");
+            container.innerHTML = "";
+            container.className = view === 'grid' ? 'grid-view' : '';
+            
+            if (courses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        No courses currently tracked.
+                    </div>
+                `;
+                return;
+            }
+            
+            courses.forEach((course) => {
+                if (course.tasks.length === 0) return;
+                
+                const courseDiv = document.createElement("div");
+                courseDiv.className = `course ${view === 'grid' ? 'grid-view' : ''}`;
+                courseDiv.innerHTML = `<h2>${course.name}</h2>`;
+                
+                const tasksContainer = document.createElement("div");
+                tasksContainer.className = view === 'grid' ? 'grid-view' : '';
+                
+                course.tasks.forEach((task) => {
+                    const taskDiv = document.createElement("div");
+                    taskDiv.className = `task ${view === 'grid' ? 'grid-view' : ''}`;
+                    
+                    // Calculate days until deadline
+                    const deadlineDate = new Date(task.deadline);
+                    const today = new Date();
+                    const timeDiff = deadlineDate.getTime() - today.getTime();
+                    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    
+                    // Determine warning level
+                    let daysLeftClass = '';
+                    let daysLeftText = '';
+                    if (daysDiff < 0) {
+                        daysLeftClass = 'danger';
+                        daysLeftText = `${Math.abs(daysDiff)} days overdue`;
+                    } else if (daysDiff === 0) {
+                        daysLeftClass = 'danger';
+                        daysLeftText = 'Due today';
+                    } else if (daysDiff <= 3) {
+                        daysLeftClass = 'warning';
+                        daysLeftText = `${daysDiff} days left`;
+                    } else {
+                        daysLeftText = `${daysDiff} days left`;
+                    }
+                    
+                    // Check if deadline is within 3 days for warning
+                    const isWarning = daysDiff <= 3 && daysDiff >= 0;
+                    const isOverdue = daysDiff < 0;
+                    
+                    taskDiv.innerHTML = `
+                        <div class="task-info">
+                            <span class="task-name">${task.name}</span>
+                            <span class="task-deadline ${isWarning || isOverdue ? 'warning' : ''} ${isOverdue ? 'danger' : ''}">
+                                ${isOverdue ? 'OVERDUE' : 'DEADLINE'}: ${task.deadline} 
+                                ${isWarning ? '⚠️' : ''}
+                                ${isOverdue ? '‼️' : ''}
+                            </span>
+                            <span class="task-days-left ${daysLeftClass}">${daysLeftText}</span>
+                        </div>
+                    `;
+                    
+                    tasksContainer.appendChild(taskDiv);
+                });
+                
+                courseDiv.appendChild(tasksContainer);
+                container.appendChild(courseDiv);
+            });
+        }
+        
         // Event listeners for calendar navigation
         document.getElementById("prev-month").addEventListener("click", () => {
             currentMonth--;
@@ -652,60 +972,30 @@
                 document.getElementById("tasks-modal").classList.remove("active");
             }
         });
-
-        function renderCourses() {
-            const container = document.getElementById("courses");
-            container.innerHTML = "";
-            
-            if (courses.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        No courses currently tracked.
-                    </div>
-                `;
-                return;
+        
+        // View toggle buttons
+        document.getElementById("list-view-btn").addEventListener("click", () => {
+            if (currentView !== 'list') {
+                currentView = 'list';
+                renderCourses('list');
+                document.getElementById("list-view-btn").classList.add("active");
+                document.getElementById("grid-view-btn").classList.remove("active");
             }
-            
-            courses.forEach((course) => {
-                if (course.tasks.length === 0) return;
-                
-                const courseDiv = document.createElement("div");
-                courseDiv.className = "course";
-                courseDiv.innerHTML = `<h2>${course.name}</h2>`;
-                
-                course.tasks.forEach((task) => {
-                    const taskDiv = document.createElement("div");
-                    taskDiv.className = "task";
-                    
-                    // Check if deadline is within 3 days for warning
-                    const deadlineDate = new Date(task.deadline);
-                    const today = new Date();
-                    const timeDiff = deadlineDate.getTime() - today.getTime();
-                    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    const isWarning = daysDiff <= 3 && daysDiff >= 0;
-                    const isOverdue = daysDiff < 0;
-                    
-                    taskDiv.innerHTML = `
-                        <div class="task-info">
-                            <span class="task-name">${task.name}</span>
-                            <span class="task-deadline ${isWarning || isOverdue ? 'warning' : ''}">
-                                ${isOverdue ? 'OVERDUE' : 'DEADLINE'}: ${task.deadline} 
-                                ${isWarning ? '⚠️' : ''}
-                                ${isOverdue ? '‼️' : ''}
-                            </span>
-                        </div>
-                    `;
-                    
-                    courseDiv.appendChild(taskDiv);
-                });
-                
-                container.appendChild(courseDiv);
-            });
-        }
+        });
+        
+        document.getElementById("grid-view-btn").addEventListener("click", () => {
+            if (currentView !== 'grid') {
+                currentView = 'grid';
+                renderCourses('grid');
+                document.getElementById("grid-view-btn").classList.add("active");
+                document.getElementById("list-view-btn").classList.remove("active");
+            }
+        });
 
         // Initial render
-        renderCourses();
+        renderCourses(currentView);
         generateCalendar(currentMonth, currentYear);
+        updateWeekProgress();
         
         // Add subtle flicker effect occasionally
         setInterval(() => {

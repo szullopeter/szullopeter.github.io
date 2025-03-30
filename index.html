@@ -2,48 +2,720 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Modern Web Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Semester Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&family=Space+Mono&display=swap">
     <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --accent-color: #ff5e57;
+            --border-color: #333;
+            --warning-color: #ff9a3c;
+            --retro-teal: #00c8c8;
+            --film-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            background-image: url('planet.png');
-            background-size: 100%;
-            color: white;
+            font-family: 'Chivo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 15px;
+            margin: 0 auto;
+            line-height: 1.5;
+            background-image: var(--film-grain);
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            padding: 0 10px;
+        }
+        
+        h1 {
+            color: var(--accent-color);
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            line-height: 1.2;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), var(--retro-teal), var(--accent-color));
+            background-size: 300% 100%;
+            animation: gradient 8s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.7rem, 3vw, 0.9rem);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .course {
+            background-color: var(--card-bg);
+            margin-bottom: 20px;
+            padding: 18px 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+        }
+        
+        .course h2 {
+            color: var(--retro-teal);
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            display: flex;
+            align-items: center;
+            line-height: 1.3;
+        }
+        
+        .course h2::before {
+            content: "»";
+            color: var(--accent-color);
+            margin-right: 8px;
+            font-size: 1.4rem;
+        }
+        
+        .task {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            margin: 8px 0;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .task-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            position: relative;
+            display: inline-block;
+            word-break: break-word;
+        }
+        
+        .task-deadline {
+            font-size: clamp(0.75rem, 3vw, 0.85rem);
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .task-deadline.warning {
+            color: var(--warning-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        .film-reel {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            opacity: 0.5;
+        }
+        
+        .film-reel span {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            background-color: var(--text-secondary);
+            border-radius: 50%;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .film-reel span::before,
+        .film-reel span::after {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 6px;
+            background-color: var(--text-secondary);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .film-reel span::before {
+            right: 100%;
+        }
+        
+        .film-reel span::after {
+            left: 100%;
+        }
+        
+        /* Retro CRT scanline effect */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.15) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+            animation: scanline 6s linear infinite;
+        }
+        
+        /* Calendar Styles */
+        .calendar-container {
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--retro-teal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calendar-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--retro-teal), transparent);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .calendar-title {
+            color: var(--retro-teal);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .calendar-nav button {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.2s;
+        }
+        
+        .calendar-nav button:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+            padding: 5px 0;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        
+        .calendar-day:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .calendar-day.empty {
+            opacity: 0.3;
+            cursor: default;
+        }
+        
+        .calendar-day.today {
+            border-color: var(--accent-color);
+        }
+        
+        .calendar-day.has-tasks::after {
+            content: "";
+            position: absolute;
+            bottom: 5px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+        }
+        
+        .calendar-day.selected {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+        
+        .calendar-day.selected.has-tasks::after {
+            background-color: var(--bg-color);
+        }
+        
+        .tasks-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .tasks-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .tasks-modal-content {
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-left: 3px solid var(--accent-color);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .tasks-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .tasks-modal-title {
+            color: var(--retro-teal);
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .tasks-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .tasks-modal-close:hover {
+            color: var(--accent-color);
+        }
+        
+        .modal-task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .modal-task {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid var(--retro-teal);
+        }
+        
+        .modal-task-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .modal-task-course {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Welcome to My Website</h1>
-        <nav>
-            <ul>
-                <li><a href="#section1">Section 1</a></li>
-                <li><a href="#section2">Section 2</a></li>
-                <li><a href="#section3">Section 3</a></li>
-            </ul>
-        </nav>
+        <h1>SEMESTER DASHBOARD</h1>
+        <div class="subtitle">ACADEMIC PRODUCTION STUDIO</div>
+        <div class="film-reel">
+            <span></span>
+            <span></span>
+        </div>
     </header>
+    
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <h3 class="calendar-title" id="calendar-month-year">April 2025</h3>
+            <div class="calendar-nav">
+                <button id="prev-month">Prev</button>
+                <button id="next-month">Next</button>
+            </div>
+        </div>
+        <div class="calendar-grid" id="calendar-days-header">
+            <div class="calendar-day-header">Sun</div>
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+        </div>
+        <div class="calendar-grid" id="calendar-days"></div>
+    </div>
+    
+    <div id="courses"></div>
 
-    <main>
-        <section id="section1">
-            <h2>Section 1</h2>
-            <p>This is the content of Section 1.</p>
-        </section>
+    <div class="tasks-modal" id="tasks-modal">
+        <div class="tasks-modal-content">
+            <div class="tasks-modal-header">
+                <h3 class="tasks-modal-title" id="modal-date-title">Tasks for April 7, 2025</h3>
+                <button class="tasks-modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-task-list" id="modal-task-list"></div>
+        </div>
+    </div>
 
-        <section id="section2">
-            <h2>Section 2</h2>
-            <p>This is the content of Section 2.</p>
-        </section>
+    <script>
+        const courses = [
+            {
+                name: "MI",
+                tasks: [
+                    { name: "HW - Phase2", deadline: "2025-05-23" },
+                    { name: "Final", deadline: "2025-05-23" }
+                ]
+            },
+            {
+                name: "SWIndustry",
+                tasks: [
+                    { name: "Exam", deadline: "2025-05-07" },
+                    { name: "Final", deadline: "2025-05-23" }
+                ]
+            },
+            {
+                name: "UIX",
+                tasks: [
+                    { name: "Lab7", deadline: "2025-04-07" },
+                    { name: "Lab8", deadline: "2025-04-14" },
+                    { name: "Lab9", deadline: "2025-04-21" },
+                    { name: "Lab10", deadline: "2025-04-28" },
+                    { name: "Lab11", deadline: "2025-05-05" }
+                ]
+            },
+            {
+                name: "TED",
+                tasks: [
+                    { name: "PPT", deadline: "2025-05-06" }
+                ]
+            },
+            {
+                name: "BP",
+                tasks: [
+                    { name: "Exam2", deadline: "2025-05-14" },
+                    { name: "Group", deadline: "2025-05-09" }
+                ]
+            },
+            {
+                name: "BI",
+                tasks: [
+                    { name: "HW - Spec", deadline: "2025-04-16" },
+                    { name: "HW", deadline: "2025-05-01" }
+                ]
+            }
+        ];
 
-        <section id="section3">
-            <h2>Section 3</h2>
-            <p>This is the content of Section 3.</p>
-        </section>
-    </main>
+        // Calendar functionality
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        
+        // Get all tasks dates
+        function getAllTaskDates() {
+            const dates = [];
+            courses.forEach(course => {
+                course.tasks.forEach(task => {
+                    if (!dates.includes(task.deadline)) {
+                        dates.push(task.deadline);
+                    }
+                });
+            });
+            return dates;
+        }
+        
+        const taskDates = getAllTaskDates();
+        
+        function generateCalendar(month, year) {
+            const calendarDays = document.getElementById("calendar-days");
+            calendarDays.innerHTML = "";
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            // Set month and year title
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById("calendar-month-year").textContent = `${monthNames[month]} ${year}`;
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement("div");
+                emptyDay.className = "calendar-day empty";
+                calendarDays.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement("div");
+                dayElement.className = "calendar-day";
+                dayElement.textContent = day;
+                
+                const currentDate = new Date(year, month, day);
+                const dateString = formatDate(currentDate);
+                
+                // Check if today
+                if (currentDate.toDateString() === today.toDateString()) {
+                    dayElement.classList.add("today");
+                }
+                
+                // Check if has tasks
+                if (taskDates.includes(dateString)) {
+                    dayElement.classList.add("has-tasks");
+                    
+                    // Add click event to show tasks
+                    dayElement.addEventListener("click", () => {
+                        showTasksForDate(dateString, day, month, year);
+                    });
+                } else {
+                    dayElement.style.cursor = "default";
+                }
+                
+                calendarDays.appendChild(dayElement);
+            }
+        }
+        
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function showTasksForDate(dateString, day, month, year) {
+            const modal = document.getElementById("tasks-modal");
+            const modalTitle = document.getElementById("modal-date-title");
+            const taskList = document.getElementById("modal-task-list");
+            
+            // Set modal title
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            modalTitle.textContent = `Tasks for ${monthNames[month]} ${day}, ${year}`;
+            
+            // Clear previous tasks
+            taskList.innerHTML = "";
+            
+            // Find tasks for this date
+            const tasksForDate = [];
+            courses.forEach(course => {
+                course.tasks.forEach(task => {
+                    if (task.deadline === dateString) {
+                        tasksForDate.push({
+                            name: task.name,
+                            course: course.name
+                        });
+                    }
+                });
+            });
+            
+            if (tasksForDate.length === 0) {
+                taskList.innerHTML = "<p>No tasks for this date.</p>";
+            } else {
+                tasksForDate.forEach(task => {
+                    const taskElement = document.createElement("div");
+                    taskElement.className = "modal-task";
+                    taskElement.innerHTML = `
+                        <div class="modal-task-name">${task.name}</div>
+                        <div class="modal-task-course">${task.course}</div>
+                    `;
+                    taskList.appendChild(taskElement);
+                });
+            }
+            
+            // Show modal
+            modal.classList.add("active");
+        }
+        
+        // Event listeners for calendar navigation
+        document.getElementById("prev-month").addEventListener("click", () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+        
+        document.getElementById("next-month").addEventListener("click", () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+        
+        // Close modal
+        document.getElementById("modal-close-btn").addEventListener("click", () => {
+            document.getElementById("tasks-modal").classList.remove("active");
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById("tasks-modal").addEventListener("click", (e) => {
+            if (e.target === document.getElementById("tasks-modal")) {
+                document.getElementById("tasks-modal").classList.remove("active");
+            }
+        });
 
-    <footer>
-        <p>&copy; 2023 Your Name</p>
-    </footer>
+        function renderCourses() {
+            const container = document.getElementById("courses");
+            container.innerHTML = "";
+            
+            if (courses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        No courses currently tracked.
+                    </div>
+                `;
+                return;
+            }
+            
+            courses.forEach((course) => {
+                if (course.tasks.length === 0) return;
+                
+                const courseDiv = document.createElement("div");
+                courseDiv.className = "course";
+                courseDiv.innerHTML = `<h2>${course.name}</h2>`;
+                
+                course.tasks.forEach((task) => {
+                    const taskDiv = document.createElement("div");
+                    taskDiv.className = "task";
+                    
+                    // Check if deadline is within 3 days for warning
+                    const deadlineDate = new Date(task.deadline);
+                    const today = new Date();
+                    const timeDiff = deadlineDate.getTime() - today.getTime();
+                    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    const isWarning = daysDiff <= 3 && daysDiff >= 0;
+                    const isOverdue = daysDiff < 0;
+                    
+                    taskDiv.innerHTML = `
+                        <div class="task-info">
+                            <span class="task-name">${task.name}</span>
+                            <span class="task-deadline ${isWarning || isOverdue ? 'warning' : ''}">
+                                ${isOverdue ? 'OVERDUE' : 'DEADLINE'}: ${task.deadline} 
+                                ${isWarning ? '⚠️' : ''}
+                                ${isOverdue ? '‼️' : ''}
+                            </span>
+                        </div>
+                    `;
+                    
+                    courseDiv.appendChild(taskDiv);
+                });
+                
+                container.appendChild(courseDiv);
+            });
+        }
+
+        // Initial render
+        renderCourses();
+        generateCalendar(currentMonth, currentYear);
+        
+        // Add subtle flicker effect occasionally
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                document.body.style.opacity = 0.98;
+                setTimeout(() => {
+                    document.body.style.opacity = 1;
+                }, 50);
+            }
+        }, 8000);
+    </script>
 </body>
 </html>

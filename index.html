@@ -596,13 +596,14 @@
             <div class="progress-fill" id="week-progress"></div>
         </div>
         <div class="progress-days">
+            <div class="progress-day" id="sun">Sun</div>
             <div class="progress-day" id="mon">Mon</div>
             <div class="progress-day" id="tue">Tue</div>
             <div class="progress-day" id="wed">Wed</div>
             <div class="progress-day" id="thu">Thu</div>
             <div class="progress-day" id="fri">Fri</div>
             <div class="progress-day" id="sat">Sat</div>
-            <div class="progress-day" id="sun">Sun</div>
+            
         </div>
     </div>
     
@@ -616,13 +617,14 @@
             </div>
         </div>
         <div class="calendar-grid" id="calendar-days-header">
+            <div class="calendar-day-header">Sun</div>
             <div class="calendar-day-header">Mon</div>
             <div class="calendar-day-header">Tue</div>
             <div class="calendar-day-header">Wed</div>
             <div class="calendar-day-header">Thu</div>
             <div class="calendar-day-header">Fri</div>
             <div class="calendar-day-header">Sat</div>
-            <div class="calendar-day-header">Sun</div>
+            
         </div>
         <div class="calendar-grid" id="calendar-days"></div>
     </div>
@@ -856,7 +858,11 @@
             document.getElementById("week-progress").style.width = `${weekProgress * 100}%`;
             
             // Highlight current day
+<<<<<<< Updated upstream
             const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+=======
+            const days = ['sun','mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+>>>>>>> Stashed changes
             days.forEach((day, index) => {
                 const dayElement = document.getElementById(day);
                 if (index === dayOfWeek) {

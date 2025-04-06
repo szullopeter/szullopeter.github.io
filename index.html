@@ -856,7 +856,7 @@
             document.getElementById("week-progress").style.width = `${weekProgress * 100}%`;
             
             // Highlight current day
-            const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat','sun'];
             days.forEach((day, index) => {
                 const dayElement = document.getElementById(day);
                 if (index === dayOfWeek) {

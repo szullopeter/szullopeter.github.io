@@ -129,7 +129,16 @@
             background-color: rgba(255, 255, 255, 0.03);
             border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
         }
+        .task:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.task[data-has-duration="true"] {
+    cursor: pointer;
+    border-left: 3px solid var(--retro-teal);
+}
         
         .task.grid-view {
             margin: 0;
@@ -574,6 +583,74 @@
                 gap: 5px;
             }
         }
+
+        .calendar-day.task-start {
+    position: relative;
+    background-color: rgba(0, 200, 200, 0.2) !important;
+}
+
+.calendar-day.task-start::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 3px;
+    background: var(--retro-teal);
+    z-index: 1;
+}
+
+.calendar-day.task-end {
+    position: relative;
+    background-color: rgba(255, 94, 87, 0.2) !important;
+}
+
+.calendar-day.task-end::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    width: 50%;
+    height: 3px;
+    background: var(--accent-color);
+    z-index: 1;
+}
+
+.calendar-day.task-duration {
+    position: relative;
+    background-color: rgba(0, 200, 200, 0.1) !important;
+}
+.task-duration-hint {
+    font-size: 0.7rem;
+    color: var(--retro-teal);
+    margin-top: 3px;
+    font-family: 'Space Mono', monospace;
+    display: block;
+}
+
+.calendar-day.task-duration::before {   
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--retro-teal);
+    z-index: 1;
+}
+.modal-task-duration {
+    font-size: 0.75rem;
+    color: var(--retro-teal);
+    margin-top: 4px;
+    font-family: 'Space Mono', monospace;
+}
+
+.calendar-day.task-start::after,
+.calendar-day.task-end::before,
+.calendar-day.task-duration::before {
+    height: 4px;
+    opacity: 0.8;
+}
     </style>
 </head>
 <body>
@@ -657,14 +734,14 @@
             {
                 name: "MI",
                 tasks: [
-                    { name: "HW - Phase2", deadline: "2025-04-16" },
-                    { name: "Final", deadline: "2025-05-23" }
+                    { name: "HW - Phase2", deadline: "2025-04-16" ,daysNeeded: 4   },
+                    { name: "Final", deadline: "2025-05-23" , daysNeeded: 21}
                 ]
             },
             {
                 name: "SWIndustry",
                 tasks: [
-                    { name: "Exam", deadline: "2025-05-07" },
+                    { name: "Exam", deadline: "2025-05-07" , daysNeeded: 21},
                     { name: "Final", deadline: "2025-05-23" }
                 ]
             },
@@ -672,32 +749,32 @@
             {
                 name: "BP",
                 tasks: [
-                    { name: "Exam2", deadline: "2025-05-14" },
-                    { name: "Group", deadline: "2025-05-09" }
+                    { name: "Exam2", deadline: "2025-05-14" , daysNeeded: 5},
+                    { name: "Group", deadline: "2025-05-09", daysNeeded: 1 }
                 ]
             },
             {
                 name: "BI",
                 tasks: [
                     //{ name: "HW - Spec", deadline: "2025-04-16" },
-                    { name: "HW", deadline: "2025-04-20" }
+                    { name: "HW", deadline: "2025-04-20", daysNeeded: 3 }
                 ]
             },
                         
             {
                 name: "TED",
                 tasks: [
-                    { name: "PPT", deadline: "2025-04-17" }
+                    { name: "PPT", deadline: "2025-05-03", daysNeeded: 10 }
                 ]
             },
             {
                 name: "UIX",
                 tasks: [
                    // { name: "Lab7", deadline: "2025-04-07" },
-                    { name: "Lab8", deadline: "2025-04-16" },
-                    { name: "Lab9", deadline: "2025-04-30" },
-                    { name: "Lab10", deadline: "2025-05-03" },
-                    { name: "Lab11", deadline: "2025-05-11" }
+                    { name: "Lab8", deadline: "2025-04-16", daysNeeded: 2 },
+                    { name: "Lab9", deadline: "2025-04-30" , daysNeeded: 7},
+                    { name: "Lab10", deadline: "2025-05-03", daysNeeded: 7 },
+                    { name: "Lab11", deadline: "2025-05-11", daysNeeded: 7 }
                 ]
             },
         ];
@@ -723,53 +800,53 @@
         const taskDates = getAllTaskDates();
         
         function generateCalendar(month, year) {
-            const calendarDays = document.getElementById("calendar-days");
-            calendarDays.innerHTML = "";
-            
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
-            
-            // Set month and year title
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById("calendar-month-year").textContent = `${monthNames[month]} ${year}`;
-            
-            // Add empty cells for days before the first day of the month
-            for (let i = 0; i < firstDay; i++) {
-                const emptyDay = document.createElement("div");
-                emptyDay.className = "calendar-day empty";
-                calendarDays.appendChild(emptyDay);
-            }
-            
-            // Add days of the month
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayElement = document.createElement("div");
-                dayElement.className = "calendar-day";
-                dayElement.textContent = day;
-                
-                const currentDate = new Date(year, month, day);
-                const dateString = formatDate(currentDate);
-                
-                // Check if today
-                if (currentDate.toDateString() === today.toDateString()) {
-                    dayElement.classList.add("today");
-                }
-                
-                // Check if has tasks
-                if (taskDates.includes(dateString)) {
-                    dayElement.classList.add("has-tasks");
-                    
-                    // Add click event to show tasks
-                    dayElement.addEventListener("click", () => {
-                        showTasksForDate(dateString, day, month, year);
-                    });
-                } else {
-                    dayElement.style.cursor = "default";
-                }
-                
-                calendarDays.appendChild(dayElement);
-            }
+    const calendarDays = document.getElementById("calendar-days");
+    calendarDays.innerHTML = "";
+    
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    
+    // Set month and year title
+    const monthNames = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"];
+    document.getElementById("calendar-month-year").textContent = `${monthNames[month]} ${year}`;
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement("div");
+        emptyDay.className = "calendar-day empty";
+        calendarDays.appendChild(emptyDay);
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement("div");
+        dayElement.className = "calendar-day";
+        dayElement.textContent = day;
+        
+        const currentDate = new Date(year, month, day);
+        currentDate.setHours(0, 0, 0, 0);
+        const dateString = formatDate(currentDate);
+        
+        // Check if today
+        if (currentDate.toDateString() === today.toDateString()) {
+            dayElement.classList.add("today");
         }
+        
+        // Check if has tasks
+        if (taskDates.includes(dateString)) {
+            dayElement.classList.add("has-tasks");
+            dayElement.addEventListener("click", () => {
+                showTasksForDate(dateString, day, month, year);
+            });
+        } else {
+            dayElement.style.cursor = "default";
+        }
+        
+        calendarDays.appendChild(dayElement);
+    }
+}
         
         function formatDate(date) {
             const year = date.getFullYear();
@@ -779,47 +856,112 @@
         }
         
         function showTasksForDate(dateString, day, month, year) {
-            const modal = document.getElementById("tasks-modal");
-            const modalTitle = document.getElementById("modal-date-title");
-            const taskList = document.getElementById("modal-task-list");
-            
-            // Set modal title
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            modalTitle.textContent = `Tasks for ${monthNames[month]} ${day}, ${year}`;
-            
-            // Clear previous tasks
-            taskList.innerHTML = "";
-            
-            // Find tasks for this date
-            const tasksForDate = [];
-            courses.forEach(course => {
-                course.tasks.forEach(task => {
-                    if (task.deadline === dateString) {
-                        tasksForDate.push({
-                            name: task.name,
-                            course: course.name
-                        });
-                    }
-                });
-            });
-            
-            if (tasksForDate.length === 0) {
-                taskList.innerHTML = "<p>No tasks for this date.</p>";
-            } else {
-                tasksForDate.forEach(task => {
-                    const taskElement = document.createElement("div");
-                    taskElement.className = "modal-task";
-                    taskElement.innerHTML = `
-                        <div class="modal-task-name">${task.name}</div>
-                        <div class="modal-task-course">${task.course}</div>
-                    `;
-                    taskList.appendChild(taskElement);
+    const modal = document.getElementById("tasks-modal");
+    const modalTitle = document.getElementById("modal-date-title");
+    const taskList = document.getElementById("modal-task-list");
+    
+    // Set modal title
+    const monthNames = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"];
+    modalTitle.textContent = `Tasks for ${monthNames[month]} ${day}, ${year}`;
+    
+    // Clear previous tasks
+    taskList.innerHTML = "";
+    
+    // Find tasks for this date
+    const tasksForDate = [];
+    courses.forEach(course => {
+        course.tasks.forEach(task => {
+            if (task.deadline === dateString) {
+                tasksForDate.push({
+                    name: task.name,
+                    course: course.name,
+                    daysNeeded: task.daysNeeded
                 });
             }
+        });
+    });
+    
+    if (tasksForDate.length === 0) {
+        taskList.innerHTML = "<p>No tasks for this date.</p>";
+    } else {
+        tasksForDate.forEach(task => {
+            const taskElement = document.createElement("div");
+            taskElement.className = "modal-task";
             
-            // Show modal
-            modal.classList.add("active");
+            taskElement.innerHTML = `
+                <div class="modal-task-name">${task.name}</div>
+                <div class="modal-task-course">${task.course}</div>
+            `;
+            
+            // Add click event to show duration
+            taskElement.addEventListener("click", () => {
+                if (task.daysNeeded) {
+                    showTaskDuration(task, dateString);
+                }
+            });
+            
+            taskList.appendChild(taskElement);
+        });
+    }
+    
+    // Show modal
+    modal.classList.add("active");
+}
+
+function showTaskDuration(task, deadlineStr) {
+    // Clear any existing visualizations
+    clearTaskDurationVisualization();
+    
+    const deadline = new Date(deadlineStr);
+    deadline.setHours(0, 0, 0, 0);
+    const startDate = new Date(deadline);
+    startDate.setDate(startDate.getDate() - task.daysNeeded);
+    
+    // Get all calendar days
+    const calendarDays = document.querySelectorAll('.calendar-day:not(.empty)');
+    
+    calendarDays.forEach(dayElement => {
+        const dayDate = new Date(currentYear, currentMonth, parseInt(dayElement.textContent));
+        dayDate.setHours(0, 0, 0, 0);
+        
+        // Format dates for comparison
+        const dayDateStr = formatDate(dayDate);
+        const startDateStr = formatDate(startDate);
+        const deadlineStr = formatDate(deadline);
+        
+        if (dayDateStr === startDateStr) {
+            dayElement.classList.add("task-start");
+        } else if (dayDateStr === deadlineStr) {
+            dayElement.classList.add("task-end");
+        } else if (dayDate > startDate && dayDate < deadline) {
+            dayElement.classList.add("task-duration");
         }
+    });
+    
+    // Also highlight the days in the previous/next month if needed
+    highlightAdjacentMonths(startDate, deadline);
+}
+
+function highlightAdjacentMonths(startDate, deadline) {
+    // If the start date is in the previous month
+    if (startDate.getMonth() < currentMonth || startDate.getFullYear() < currentYear) {
+        // You might want to implement logic to show in previous month
+        console.log("Start date is in previous month");
+    }
+    
+    // If the deadline is in the next month
+    if (deadline.getMonth() > currentMonth || deadline.getFullYear() > currentYear) {
+        // You might want to implement logic to show in next month
+        console.log("Deadline is in next month");
+    }
+}
+
+function clearTaskDurationVisualization() {
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.classList.remove("task-start", "task-end", "task-duration");
+    });
+}
         
         // Calculate current week of semester and progress
         function updateWeekProgress() {
@@ -895,8 +1037,8 @@
                 tasksContainer.className = view === 'grid' ? 'grid-view' : '';
                 
                 course.tasks.forEach((task) => {
-                    const taskDiv = document.createElement("div");
-                    taskDiv.className = `task ${view === 'grid' ? 'grid-view' : ''}`;
+        const taskDiv = document.createElement("div");
+        taskDiv.className = `task ${view === 'grid' ? 'grid-view' : ''}`;
                     
                     // Calculate days until deadline
                     const deadlineDate = new Date(task.deadline);
@@ -925,16 +1067,29 @@
                     const isOverdue = daysDiff < 0;
                     
                     taskDiv.innerHTML = `
-                        <div class="task-info">
-                            <span class="task-name">${task.name}</span>
-                            <span class="task-deadline ${isWarning || isOverdue ? 'warning' : ''} ${isOverdue ? 'danger' : ''}">
-                                ${isOverdue ? 'OVERDUE' : 'DEADLINE'}: ${task.deadline} 
-                                ${isWarning ? '⚠️' : ''}
-                                ${isOverdue ? '‼️' : ''}
-                            </span>
-                            <span class="task-days-left ${daysLeftClass}">${daysLeftText}</span>
-                        </div>
-                    `;
+    <div class="task-info">
+        <span class="task-name">${task.name}</span>
+        <span class="task-deadline ${isWarning || isOverdue ? 'warning' : ''} ${isOverdue ? 'danger' : ''}">
+            ${isOverdue ? 'OVERDUE' : 'DEADLINE'}: ${task.deadline} 
+            ${task.daysNeeded ? '⏱️' : ''}
+            ${isWarning ? '⚠️' : ''}
+            ${isOverdue ? '‼️' : ''}
+        </span>
+        <span class="task-days-left ${daysLeftClass}">${daysLeftText}</span>
+    </div>
+`;
+
+
+                    if (task.daysNeeded) {
+            taskDiv.addEventListener('click', (e) => {
+                // Don't trigger if clicking on child elements
+                if (e.target === taskDiv || e.target.classList.contains('task-info')) {
+                    showTaskDuration(task, task.deadline);
+                }
+            });
+            taskDiv.style.cursor = 'pointer';
+        }
+        
                     
                     tasksContainer.appendChild(taskDiv);
                 });
@@ -965,15 +1120,16 @@
         
         // Close modal
         document.getElementById("modal-close-btn").addEventListener("click", () => {
-            document.getElementById("tasks-modal").classList.remove("active");
-        });
-        
-        // Close modal when clicking outside
-        document.getElementById("tasks-modal").addEventListener("click", (e) => {
-            if (e.target === document.getElementById("tasks-modal")) {
-                document.getElementById("tasks-modal").classList.remove("active");
-            }
-        });
+    document.getElementById("tasks-modal").classList.remove("active");
+    clearTaskDurationVisualization();
+});
+
+document.getElementById("tasks-modal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("tasks-modal")) {
+        document.getElementById("tasks-modal").classList.remove("active");
+        clearTaskDurationVisualization();
+    }
+});
         
         // View toggle buttons
         document.getElementById("list-view-btn").addEventListener("click", () => {

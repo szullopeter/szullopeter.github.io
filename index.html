@@ -971,7 +971,7 @@ function clearTaskDurationVisualization() {
             // Calculate current week number
             const timeDiff = today - startDate;
             const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const currentWeek = Math.floor(daysDiff / 7) + 1;
+            const currentWeek = Math.floor(daysDiff / 7) ;
             
             // Calculate current day of week (0-6, Sunday-Saturday)
             const dayOfWeek = today.getDay();

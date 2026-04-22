@@ -3,10 +3,10 @@
     "title": "Academy Dashboard",
     "semesterStart": "2025-02-10",
     "theme": {
-      "primary": "#1B365D",
-      "secondary": "#C5A059",
+      "primary": "#2B3A33",
+      "secondary": "#B87333",
       "background": "#FAF9F6",
-      "accent": "#800020"
+      "accent": "#6D4C41"
     }
   },
   "courses": [

@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Academy Dashboard</title>
+    <!-- Modern Standard Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1B365D;
@@ -21,6 +22,7 @@
             --danger: #C0392B;
             --radius: 12px;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --border: #EDF2F7;
         }
 
         * {
@@ -30,317 +32,622 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-beige);
             color: var(--text-main);
-            line-height: 1.6;
-            padding: 20px 16px;
+            line-height: 1.5;
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
             -webkit-font-smoothing: antialiased;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
+            padding: 20px 0;
         }
 
         header {
             text-align: center;
-            margin-bottom: 32px;
-            padding-top: 20px;
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            border-bottom: 3px solid var(--secondary);
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .course-section {
             margin-bottom: 24px;
         }
 
-        .course-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 0 4px;
-        }
-
-        .course-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
             color: var(--primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
         }
 
-        .task-list {
+        .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Stats & Week Indicator */
+        .dashboard-top {
             display: grid;
-            gap: 12px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .task-card {
+        .week-indicator {
             background: var(--card-bg);
             padding: 16px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+        }
+
+        .week-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: transform 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .week-number {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .week-dates {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #EDF2F7;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-days {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-day {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            width: 14%;
+            text-align: center;
+        }
+
+        .progress-day.current {
+            color: var(--primary);
+            font-weight: 800;
+            position: relative;
+        }
+
+        /* Calendar */
+        .calendar-card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-title {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .calendar-nav button {
+            background: #F7FAFC;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding-bottom: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.has-tasks::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 50%;
+        }
+
+        .calendar-day.task-start { background-color: rgba(27, 54, 93, 0.1); border-radius: 8px 0 0 8px; }
+        .calendar-day.task-end { background-color: rgba(197, 160, 89, 0.2); border-radius: 0 8px 8px 0; }
+        .calendar-day.task-duration { background-color: rgba(27, 54, 93, 0.05); border-radius: 0; }
+
+        /* View Toggle */
+        .view-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .toggle-group {
+            background: #F1F5F9;
+            padding: 4px;
+            border-radius: 10px;
+            display: flex;
+        }
+
+        .toggle-group button {
+            border: none;
+            background: transparent;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .toggle-group button.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Course List */
+        #courses-container.grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
             border-left: 4px solid var(--secondary);
         }
 
-        .task-card:active {
-            transform: scale(0.98);
+        .course-card h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 12px;
         }
 
-        .task-info {
-            flex: 1;
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .task-item:last-child { border-bottom: none; }
+
+        .task-main {
+            display: flex;
+            flex-direction: column;
         }
 
         .task-name {
             font-weight: 600;
-            font-size: 1rem;
-            color: var(--text-main);
-            margin-bottom: 2px;
+            font-size: 0.95rem;
         }
 
-        .task-date {
-            font-size: 0.8rem;
+        .task-meta {
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
-        .task-status {
-            text-align: right;
-            padding-left: 12px;
-        }
-
-        .days-left {
-            font-size: 0.85rem;
+        .days-badge {
+            font-size: 0.75rem;
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 20px;
             white-space: nowrap;
         }
 
-        .status-urgent {
-            background: rgba(192, 57, 43, 0.1);
-            color: var(--danger);
+        .status-urgent { background: rgba(192, 57, 43, 0.1); color: var(--danger); }
+        .status-soon { background: rgba(230, 126, 34, 0.1); color: var(--warning); }
+        .status-safe { background: rgba(39, 174, 96, 0.1); color: var(--success); }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
         }
 
-        .status-soon {
-            background: rgba(230, 126, 34, 0.1);
-            color: var(--warning);
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        .status-safe {
-            background: rgba(39, 174, 96, 0.1);
-            color: var(--success);
-        }
-        
-        .status-passed {
-            background: #eee;
-            color: #999;
-            text-decoration: line-through;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 48px;
-            padding-bottom: 24px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .modal-close {
+            background: #F7FAFC;
+            border: none;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
         }
 
-        /* Mobile specific adjustments */
         @media (max-width: 480px) {
-            h1 { font-size: 2rem; }
-            .stat-value { font-size: 1.25rem; }
-        }
-
-        /* Desktop specific */
-        @media (min-width: 768px) {
-            .task-list {
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            }
+            h1 { font-size: 1.5rem; }
+            .calendar-day { font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1 id="site-title">Academy</h1>
-            <p class="subtitle">Semester Tracking</p>
+            <h1 id="site-title">Academy Dashboard</h1>
+            <p class="subtitle">Personal Productivity</p>
         </header>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-value" id="days-remaining">-</span>
-                <span class="stat-label">Days Left</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-value" id="pending-tasks">-</span>
-                <span class="stat-label">Tasks Open</span>
+        <div class="dashboard-top">
+            <div class="week-indicator">
+                <div class="week-info">
+                    <div class="week-number" id="week-number">Week --</div>
+                    <div class="week-dates" id="week-dates">--</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="week-progress"></div>
+                </div>
+                <div class="progress-days">
+                    <div class="progress-day" id="day-0">Sun</div>
+                    <div class="progress-day" id="day-1">Mon</div>
+                    <div class="progress-day" id="day-2">Tue</div>
+                    <div class="progress-day" id="day-3">Wed</div>
+                    <div class="progress-day" id="day-4">Thu</div>
+                    <div class="progress-day" id="day-5">Fri</div>
+                    <div class="progress-day" id="day-6">Sat</div>
+                </div>
             </div>
         </div>
 
-        <div id="courses-container">
-            <!-- Courses will be loaded here -->
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <div class="calendar-title" id="calendar-month-year">--</div>
+                <div class="calendar-nav">
+                    <button id="prev-month">Prev</button>
+                    <button id="next-month">Next</button>
+                </div>
+            </div>
+            <div class="calendar-grid" id="calendar-days-header">
+                <div class="calendar-day-header">S</div>
+                <div class="calendar-day-header">M</div>
+                <div class="calendar-day-header">T</div>
+                <div class="calendar-day-header">W</div>
+                <div class="calendar-day-header">T</div>
+                <div class="calendar-day-header">F</div>
+                <div class="calendar-day-header">S</div>
+            </div>
+            <div class="calendar-grid" id="calendar-days"></div>
         </div>
 
-        <div class="footer">
-            &copy; <span id="year"></span> Academy Dashboard
+        <div class="view-controls">
+            <div class="section-title">Courses</div>
+            <div class="toggle-group">
+                <button id="list-view-btn" class="active">List</button>
+                <button id="grid-view-btn">Grid</button>
+            </div>
+        </div>
+
+        <div id="courses-container"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="tasks-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-date-title">Tasks</h3>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            <div id="modal-task-list"></div>
         </div>
     </div>
 
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+        let config = null;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let currentView = 'list';
 
-        async function loadDashboard() {
+        async function init() {
             try {
                 const response = await fetch('config.json');
-                const config = await response.json();
+                config = await response.json();
                 
-                // Apply theme if provided
-                if (config.settings && config.settings.theme) {
-                    const root = document.documentElement;
-                    const theme = config.settings.theme;
-                    if (theme.primary) root.style.setProperty('--primary', theme.primary);
-                    if (theme.secondary) root.style.setProperty('--secondary', theme.secondary);
-                    if (theme.background) root.style.setProperty('--bg-beige', theme.background);
-                    if (theme.accent) root.style.setProperty('--accent', theme.accent);
+                if (config.settings) {
+                    if (config.settings.title) document.getElementById('site-title').textContent = config.settings.title;
+                    if (config.settings.theme) applyTheme(config.settings.theme);
                 }
 
-                if (config.settings && config.settings.title) {
-                    document.getElementById('site-title').textContent = config.settings.title;
-                    document.title = config.settings.title;
-                }
-
-                renderDashboard(config);
-            } catch (error) {
-                console.error('Error loading config:', error);
-                document.getElementById('courses-container').innerHTML = '<p style="text-align:center; color:red;">Failed to load configuration.</p>';
+                render();
+                setupEventListeners();
+            } catch (e) {
+                console.error("Init error:", e);
             }
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            if (theme.primary) root.style.setProperty('--primary', theme.primary);
+            if (theme.secondary) root.style.setProperty('--secondary', theme.secondary);
+            if (theme.background) root.style.setProperty('--bg-beige', theme.background);
+        }
+
+        function render() {
+            updateWeekProgress();
+            renderCalendar();
+            renderCourses();
+        }
+
+        function updateWeekProgress() {
+            const today = new Date();
+            const start = config.settings.semesterStart ? new Date(config.settings.semesterStart) : new Date(today.getFullYear(), 1, 10);
+            
+            const diff = today - start;
+            const weekNum = Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1;
+            
+            document.getElementById('week-number').textContent = `Week ${weekNum}`;
+            
+            const dayOfWeek = today.getDay();
+            const progress = ((dayOfWeek + 1) / 7) * 100;
+            document.getElementById('week-progress').style.width = `${progress}%`;
+            
+            for(let i=0; i<7; i++) {
+                document.getElementById(`day-${i}`).classList.toggle('current', i === dayOfWeek);
+            }
+
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - dayOfWeek);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            
+            const options = { month: 'short', day: 'numeric' };
+            document.getElementById('week-dates').textContent = `${weekStart.toLocaleDateString(undefined, options)} - ${weekEnd.toLocaleDateString(undefined, options)}`;
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = '';
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('calendar-month-year').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day empty';
+                container.appendChild(empty);
+            }
+
+            const taskDates = {};
+            config.courses.forEach(c => {
+                c.tasks.forEach(t => {
+                    taskDates[t.deadline] = taskDates[t.deadline] || [];
+                    taskDates[t.deadline].push({ ...t, course: c.name });
+                });
+            });
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                dayEl.textContent = day;
+                
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                if (today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === day) {
+                    dayEl.classList.add('today');
+                }
+
+                if (taskDates[dateStr]) {
+                    dayEl.classList.add('has-tasks');
+                    dayEl.onclick = () => showTasks(dateStr, taskDates[dateStr]);
+                }
+
+                container.appendChild(dayEl);
+            }
+        }
+
+        function renderCourses() {
+            const container = document.getElementById('courses-container');
+            container.innerHTML = '';
+            container.className = currentView === 'grid' ? 'grid-view' : '';
+
+            config.courses.forEach(course => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `<h2>${course.name}</h2>`;
+                
+                const list = document.createElement('div');
+                course.tasks.forEach(task => {
+                    const days = getDaysDiff(task.deadline);
+                    const item = document.createElement('div');
+                    item.className = 'task-item';
+                    item.innerHTML = `
+                        <div class="task-main">
+                            <span class="task-name">${task.name}</span>
+                            <span class="task-meta">${task.deadline}</span>
+                        </div>
+                        <span class="days-badge ${getStatusClass(days)}">${formatStatus(days)}</span>
+                    `;
+                    if (task.daysNeeded) {
+                        item.onclick = () => visualizeDuration(task);
+                        item.style.cursor = 'pointer';
+                    }
+                    list.appendChild(item);
+                });
+                card.appendChild(list);
+                container.appendChild(card);
+            });
         }
 
         function getDaysDiff(dateStr) {
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            today.setHours(0,0,0,0);
             const target = new Date(dateStr);
-            target.setHours(0, 0, 0, 0);
-            const diffTime = target - today;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
         }
 
         function getStatusClass(days) {
-            if (days < 0) return 'status-passed';
+            if (days < 0) return '';
             if (days <= 3) return 'status-urgent';
             if (days <= 7) return 'status-soon';
             return 'status-safe';
         }
 
-        function formatStatusText(days) {
+        function formatStatus(days) {
             if (days < 0) return 'Passed';
             if (days === 0) return 'Today';
-            if (days === 1) return 'Tomorrow';
-            return `${days} days`;
+            return `${days}d left`;
         }
 
-        function renderDashboard(config) {
-            const container = document.getElementById('courses-container');
-            container.innerHTML = '';
+        function showTasks(date, tasks) {
+            const modal = document.getElementById('tasks-modal');
+            document.getElementById('modal-date-title').textContent = date;
+            const list = document.getElementById('modal-task-list');
+            list.innerHTML = tasks.map(t => `
+                <div class="task-item" onclick='visualizeDuration(${JSON.stringify(t)})'>
+                    <div class="task-main">
+                        <span class="task-name">${t.name}</span>
+                        <span class="task-meta">${t.course}</span>
+                    </div>
+                </div>
+            `).join('');
+            modal.classList.add('active');
+        }
 
-            let totalPending = 0;
-            let soonestDeadline = Infinity;
-
-            config.courses.forEach(course => {
-                const activeTasks = course.tasks.filter(t => getDaysDiff(t.deadline) >= 0);
-                totalPending += activeTasks.length;
-
-                const courseSection = document.createElement('div');
-                courseSection.className = 'course-section';
-
-                const header = document.createElement('div');
-                header.className = 'course-header';
-                header.innerHTML = `<h2 class="course-title">${course.name}</h2>`;
-                courseSection.appendChild(header);
-
-                const taskList = document.createElement('div');
-                taskList.className = 'task-list';
-
-                course.tasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-
-                course.tasks.forEach(task => {
-                    const days = getDaysDiff(task.deadline);
-                    if (days >= 0 && days < soonestDeadline) soonestDeadline = days;
-
-                    const taskCard = document.createElement('div');
-                    taskCard.className = 'task-card';
-                    
-                    const statusClass = getStatusClass(days);
-                    const statusText = formatStatusText(days);
-
-                    taskCard.innerHTML = `
-                        <div class="task-info">
-                            <div class="task-name">${task.name}</div>
-                            <div class="task-date">${new Date(task.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                        </div>
-                        <div class="task-status">
-                            <span class="days-left ${statusClass}">${statusText}</span>
-                        </div>
-                    `;
-                    taskList.appendChild(taskCard);
-                });
-
-                courseSection.appendChild(taskList);
-                container.appendChild(courseSection);
+        function visualizeDuration(task) {
+            if (!task.daysNeeded) return;
+            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('task-start', 'task-end', 'task-duration'));
+            
+            const deadline = new Date(task.deadline);
+            const start = new Date(deadline);
+            start.setDate(deadline.getDate() - task.daysNeeded);
+            
+            // Note: This only visualizes if within current month view
+            // In a full implementation, you'd navigate to the month
+            document.querySelectorAll('.calendar-day:not(.empty)').forEach(el => {
+                const day = parseInt(el.textContent);
+                const d = new Date(currentYear, currentMonth, day);
+                if (d.toDateString() === start.toDateString()) el.classList.add('task-start');
+                else if (d.toDateString() === deadline.toDateString()) el.classList.add('task-end');
+                else if (d > start && d < deadline) el.classList.add('task-duration');
             });
-
-            document.getElementById('pending-tasks').textContent = totalPending;
-            document.getElementById('days-remaining').textContent = soonestDeadline === Infinity ? '-' : soonestDeadline;
+            
+            document.getElementById('tasks-modal').classList.remove('active');
         }
 
-        loadDashboard();
+        function setupEventListeners() {
+            document.getElementById('prev-month').onclick = () => {
+                currentMonth--;
+                if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+                renderCalendar();
+            };
+            document.getElementById('next-month').onclick = () => {
+                currentMonth++;
+                if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+                renderCalendar();
+            };
+            document.getElementById('list-view-btn').onclick = () => {
+                currentView = 'list';
+                document.getElementById('list-view-btn').classList.add('active');
+                document.getElementById('grid-view-btn').classList.remove('active');
+                renderCourses();
+            };
+            document.getElementById('grid-view-btn').onclick = () => {
+                currentView = 'grid';
+                document.getElementById('grid-view-btn').classList.add('active');
+                document.getElementById('list-view-btn').classList.remove('active');
+                renderCourses();
+            };
+            document.getElementById('modal-close-btn').onclick = () => {
+                document.getElementById('tasks-modal').classList.remove('active');
+            };
+        }
+
+        init();
     </script>
 </body>
 </html>

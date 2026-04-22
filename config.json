@@ -1,0 +1,50 @@
+{
+  "settings": {
+    "title": "Academy Dashboard",
+    "semesterStart": "2025-02-10",
+    "theme": {
+      "primary": "#1B365D",
+      "secondary": "#C5A059",
+      "background": "#FAF9F6",
+      "accent": "#800020"
+    }
+  },
+  "courses": [
+    {
+      "name": "Fokus Grammatik",
+      "tasks": [
+        { "name": "General Task", "deadline": "2026-07-01" }
+      ]
+    },
+    {
+      "name": "Zeitung lesen",
+      "tasks": [
+        { "name": "Presentation", "deadline": "2026-07-01" }
+      ]
+    },
+    {
+      "name": "Konversation",
+      "tasks": [
+        { "name": "Presentation", "deadline": "2026-07-01" }
+      ]
+    },
+    {
+      "name": "Marketing",
+      "tasks": [
+        { "name": "Klausur", "deadline": "2026-07-01" }
+      ]
+    },
+    {
+      "name": "Konsum",
+      "tasks": [
+        { "name": "Klausur", "deadline": "2026-07-01" }
+      ]
+    },
+    {
+      "name": "PhilPolWirtsch",
+      "tasks": [
+        { "name": "Klausur", "deadline": "2026-07-01" }
+      ]
+    }
+  ]
+}

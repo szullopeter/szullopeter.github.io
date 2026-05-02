@@ -11,44 +11,44 @@
   },
   "courses": [
     {
-      "name": "Fokus Grammatik",
+      "name": "Fokus Grammatik [2]",
       "tasks": [
         { "name": "General Task", "deadline": "2026-07-01" }
       ]
     },
     {
-      "name": "Zeitung lesen",
+      "name": "Zeitung lesen [3]",
       "tasks": [
         { "name": "Presentation", "deadline": "2026-05-13" }
       ]
     },
     {
-      "name": "Konversation",
+      "name": "Konversation [2-3]",
       "tasks": [
         { "name": "Presentation", "deadline": "2026-07-01" }
       ]
     },
     {
-      "name": "Marketing",
+      "name": "Marketing [5]",
       "tasks": [
         { "name": "Klausur", "deadline": "2026-07-01" }
       ]
     },
     {
-      "name": "PhilPolWirtsch",
+      "name": "PhilPolWirtsch [5]",
       "tasks": [
         { "name": "Klausur", "deadline": "2026-07-01" }
       ]
     },
     {
-      "name": "CSR",
+      "name": "CSR [6]",
       "tasks": [
         { "name": "Presentation", "deadline": "2026-05-27" },
         { "name": "Essay", "deadline": "2026-07-01" }
       ]
     },
     {
-      "name": "WPMM_ICDA",
+      "name": "WPMM_ICDA [6]",
       "tasks": [
         { "name": "WPMM_ICDA I", "deadline": "2026-05-15" },
         { "name": "WPMM_ICDA II", "deadline": "2026-06-19" },

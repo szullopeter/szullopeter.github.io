@@ -19,7 +19,7 @@
     {
       "name": "Zeitung lesen",
       "tasks": [
-        { "name": "Presentation", "deadline": "2026-07-01" }
+        { "name": "Presentation", "deadline": "2026-05-13" }
       ]
     },
     {
@@ -35,15 +35,35 @@
       ]
     },
     {
-      "name": "Konsum",
+      "name": "PhilPolWirtsch",
       "tasks": [
         { "name": "Klausur", "deadline": "2026-07-01" }
       ]
     },
     {
-      "name": "PhilPolWirtsch",
+      "name": "CSR",
       "tasks": [
-        { "name": "Klausur", "deadline": "2026-07-01" }
+        { "name": "Presentation", "deadline": "2026-05-27" },
+        { "name": "Essay", "deadline": "2026-07-01" }
+      ]
+    },
+    {
+      "name": "WPMM_ICDA",
+      "tasks": [
+        { "name": "WPMM_ICDA I", "deadline": "2026-05-15" },
+        { "name": "WPMM_ICDA II", "deadline": "2026-06-19" },
+        { "name": "WPMM_ICDA III", "deadline": "2026-07-17" }
+      ]
+    }
+  ],
+  "general": [
+    {
+      "name": "Events",
+      "tasks": [
+        {
+          "name": "Goethe Entrepreneurship Conference 2026",
+          "deadline": "2026-05-30"
+        }
       ]
     }
   ]
